@@ -1,0 +1,48 @@
+networks:
+  default:
+    name: infra
+    external: true
+services:
+  jenkins-master:
+    image: "public.ecr.aws/zebrunner/jenkins-master:${TAG_JENKINS_MASTER}"
+    platform: linux/amd64
+    container_name: jenkins-master
+    env_file:
+      - variables.env
+    volumes:
+     - "data-volume:/var/jenkins_home:rw"
+    ports:
+     - "8090:8080"
+     - "8443:8443"
+     - "50000:50000"
+    restart: always
+  jenkins-slave:
+    image: "public.ecr.aws/zebrunner/jenkins-slave:${TAG_JENKINS_SLAVE}"
+    platform: linux/amd64
+    container_name: jenkins-slave
+    env_file:
+      - variables.env
+    environment:
+     - "JENKINS_MASTER_URL=http://jenkins-master:8080/jenkins"
+     - "JENKINS_SLAVE_NAME=jenkins-slave"
+     - "JENKINS_SLAVE_WORKERS=5"
+     - "JENKINS_SLAVE_LABELS=default maven gradle"
+    ports:
+     - "8000:8000"
+    restart: always
+#  jenkins-slave-docker:
+#    image: "public.ecr.aws/zebrunner/jenkins-slave:${TAG_JENKINS_SLAVE}-docker"
+#    container_name: jenkins-slave-docker
+#    env_file:
+#      - variables.env
+#    environment:
+#     - "JENKINS_MASTER_URL=http://jenkins-master:8080/jenkins"
+#     - "JENKINS_SLAVE_NAME=jenkins-slave-docker"
+#     - "JENKINS_SLAVE_WORKERS=1"
+#     - "JENKINS_SLAVE_LABELS=docker"
+#    volumes:
+#     - "/var/run/docker.sock:/var/run/docker.sock"
+#    restart: always
+volumes:
+  data-volume:
+
