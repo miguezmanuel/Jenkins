@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="MyTestSuite" parallel="tests" thread-count="2">
+    <parameter name="provider" value="selenium"/>
+    <test name="Test Execution">
+        <classes>
+            <class name="com.solvd.test.testclass"/>
+        </classes>
+    </test>
+</suite>
